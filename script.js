@@ -74,31 +74,42 @@ document.addEventListener('DOMContentLoaded', function () {
         moveIndicator(homeLink);
     }
 
-    // On scroll, update active link based on which section is near the top
-    const sections = Array.from(document.querySelectorAll('section[id]'));
-    function onScroll() {
-        const scrollPos = window.scrollY + headerHeight + 20;
-        for (let i = sections.length - 1; i >= 0; i--) {
-            const sec = sections[i];
-            const top = sec.offsetTop;
-            if (scrollPos >= top) {
-                const id = sec.id;
-                const activeLink = document.querySelector('.header .navbar a[href="#' + id + '"]');
-                setActive(activeLink);
+        // Use IntersectionObserver to activate nav when a section covers >= 60% of the viewport
+        const sections = Array.from(document.querySelectorAll('section[id]'));
 
-                // reveal section-title if it exists
-                const prev = sec.previousElementSibling;
-                if (prev && prev.classList.contains('section-title')) prev.classList.add('visible');
-                break;
-            }
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: buildThresholdList(0.01, 0.01, 1.0) // fine-grained thresholds
+        };
+
+        function buildThresholdList(start, step, end) {
+            const thresholds = [];
+            for (let t = start; t <= end; t += step) thresholds.push(parseFloat(t.toFixed(2)));
+            return thresholds;
         }
-    }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const ratio = entry.intersectionRatio;
 
-    // initial check (in case page loaded with a hash)
-    if (location.hash) scrollToTarget(location.hash);
-    onScroll();
+                // If section is at least 60% visible, make its nav link active
+                if (ratio >= 0.6) {
+                    const id = entry.target.id;
+                    const activeLink = document.querySelector('.header .navbar a[href="#' + id + '"]');
+                    setActive(activeLink);
+
+                    // reveal section-title if it exists
+                    const prev = entry.target.previousElementSibling;
+                    if (prev && prev.classList.contains('section-title')) prev.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+
+        // initial check (in case page loaded with a hash)
+        if (location.hash) scrollToTarget(location.hash);
 });
 
 
