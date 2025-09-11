@@ -13,6 +13,20 @@ body {
     color: #fff;
 }
 
+
+/* robot */
+
+.robot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    
+}
+
 .header {
     position: fixed;
     top: 0; left: 0; 
@@ -192,11 +206,16 @@ body {
     animation: slideTop 1s ease forwards;
     text-align: center;
     padding: 40px 0 20px;
+    background:linear-gradient(to right, #000000, #260842);
+    margin: 20px 100px ;
+    border-radius: 15px;
+    display: grid;
 }
 
 .section-title .heading {
     font-size: 40px;
     color: #c300ff;
+
 }
 
 /* when section-title is revealed (via JS) */
@@ -204,6 +223,7 @@ body {
     opacity: 1 !important;
     transform: none;
     text-shadow: 0 0 20px rgba(14,255,255,0.12);
+    
 }
 
 /* animate section title with a subtle slide and fade */
@@ -293,14 +313,15 @@ body {
 
 /* Skills Section */
 .skills-bar {
-    background: #232225a1;
+    background:linear-gradient(to right, #000000, #260842);
     padding: 40px 40px;
-    margin: 0 40px ;
+    margin: 0 100px ;
     border-radius: 15px;
     display: grid;
     grid-template-columns: 1fr 1fr; /* two columns layout */
-    gap: 40px;
+    gap: 40px 100px;
     color: #fff;
+
 }
 
 .skill {
@@ -320,7 +341,7 @@ body {
     background: #2c2f36;
     border-radius: 10px;
     overflow: hidden;
-    height: 22px;        
+    height: 33px;        
 }
 
 .progress-bar {
@@ -335,6 +356,10 @@ body {
     color: #fff;
 
 }
+.progress:hover {
+    box-shadow: 0 0 15px #ff00d4;
+    transition: box-shadow 0.3s ease;
+}   
 
 /* Section Heading */
 .section-title {
@@ -345,7 +370,6 @@ body {
 .section-title .heading {
     font-size: 36px;
     color: #c300ff;
-    border-bottom: 2px solid #c300ff;
     display: inline-block;
     padding-bottom: 8px;
 }
@@ -398,6 +422,7 @@ body {
     color: #c300ff;
     font-weight: 500;
 }
+
 
 
 /* Footer Section */

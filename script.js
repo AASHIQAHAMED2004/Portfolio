@@ -1,5 +1,5 @@
 var typed = new Typed('.changingtxt', {
-    strings: ['Web Developer', 'Designer'],
+    strings: ['Web Developer', '3D- Designer'],
     typeSpeed: 100,
     backSpeed: 100,
     backDelay: 1000,
@@ -89,19 +89,94 @@ document.addEventListener('DOMContentLoaded', function () {
             return thresholds;
         }
 
+        // Mark and pause animated elements initially so animations only play while their section is visible
+        function markAnimatedElements() {
+            sections.forEach(sec => {
+                sec.querySelectorAll('*').forEach(el => {
+                    const cs = window.getComputedStyle(el);
+                    if (cs && cs.animationName && cs.animationName !== 'none' && cs.animationDuration && cs.animationDuration !== '0s') {
+                        el.dataset.hasAnim = '1';
+                        el.style.animationPlayState = 'paused';
+                    }
+                });
+
+                const prev = sec.previousElementSibling;
+                if (prev) {
+                    const csPrev = window.getComputedStyle(prev);
+                    if (csPrev && csPrev.animationName && csPrev.animationName !== 'none' && csPrev.animationDuration && csPrev.animationDuration !== '0s') {
+                        prev.dataset.hasAnim = '1';
+                        prev.style.animationPlayState = 'paused';
+                    }
+                    prev.querySelectorAll('*').forEach(el => {
+                        const cs2 = window.getComputedStyle(el);
+                        if (cs2 && cs2.animationName && cs2.animationName !== 'none' && cs2.animationDuration && cs2.animationDuration !== '0s') {
+                            el.dataset.hasAnim = '1';
+                            el.style.animationPlayState = 'paused';
+                        }
+                    });
+                }
+            });
+        }
+
+        // run the marking step once
+        markAnimatedElements();
+
+        // Collect progress bars (skills) and store their intended widths, then collapse them to 0
+        function markProgressBars() {
+            const bars = Array.from(document.querySelectorAll('.progress-bar'));
+            bars.forEach(bar => {
+                // store original inline width (index.html uses inline widths like "95%")
+                const orig = bar.style.width && bar.style.width.trim() ? bar.style.width.trim() : '';
+                bar.dataset.origWidth = orig;
+                // collapse by default so transition only occurs when we set it later
+                bar.style.width = '0%';
+            });
+        }
+
+        markProgressBars();
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const ratio = entry.intersectionRatio;
 
-                // If section is at least 60% visible, make its nav link active
+                // If section is at least 60% visible, make its nav link active and resume animations
+                const prev = entry.target.previousElementSibling;
                 if (ratio >= 0.6) {
                     const id = entry.target.id;
                     const activeLink = document.querySelector('.header .navbar a[href="#' + id + '"]');
                     setActive(activeLink);
 
                     // reveal section-title if it exists
-                    const prev = entry.target.previousElementSibling;
                     if (prev && prev.classList.contains('section-title')) prev.classList.add('visible');
+
+                    // mark section as in-view for CSS-based transitions
+                    entry.target.classList.add('in-view');
+
+                    // resume animations that were paused
+                    Array.from(entry.target.querySelectorAll('[data-has-anim]')).forEach(el => el.style.animationPlayState = 'running');
+                    if (prev) {
+                        if (prev.dataset.hasAnim) prev.style.animationPlayState = 'running';
+                        Array.from(prev.querySelectorAll('[data-has-anim]')).forEach(el => el.style.animationPlayState = 'running');
+                    }
+
+                    // For skills/progress bars inside this section, restore their widths to trigger transition
+                    Array.from(entry.target.querySelectorAll('.progress-bar')).forEach(bar => {
+                        const w = bar.dataset.origWidth || '';
+                        if (w) bar.style.width = w; // triggers CSS transition
+                    });
+                } else {
+                    // not sufficiently visible: pause animations and remove in-view
+                    entry.target.classList.remove('in-view');
+                    Array.from(entry.target.querySelectorAll('[data-has-anim]')).forEach(el => el.style.animationPlayState = 'paused');
+                    if (prev) {
+                        if (prev.dataset.hasAnim) prev.style.animationPlayState = 'paused';
+                        Array.from(prev.querySelectorAll('[data-has-anim]')).forEach(el => el.style.animationPlayState = 'paused');
+                    }
+
+                    // collapse progress bars when section is out of view so they animate again on re-entry
+                    Array.from(entry.target.querySelectorAll('.progress-bar')).forEach(bar => {
+                        bar.style.width = '0%';
+                    });
                 }
             });
         }, observerOptions);
