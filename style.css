@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Salbo';
+    font-family: 'Lato','Salbo';
 }
 
 body {
@@ -12,7 +12,6 @@ body {
     background-attachment: fixed;
     color: #fff;
 }
-
 
 /* robot */
 
@@ -23,9 +22,29 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    pointer-events: none;
-    
+    pointer-events: none;    
 }
+h1{
+    font-family: 'Orbitron';
+}
+
+
+/* spline cover */
+
+.spline-cover {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 180px;   
+  height: 60px;
+  background: linear-gradient(to bottom, #150227, #150227);
+  z-index: -1;
+  pointer-events: none; 
+}
+
+
+
+
 
 .header {
     position: fixed;

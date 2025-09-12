@@ -1,5 +1,10 @@
 var typed = new Typed('.changingtxt', {
-    strings: ['Web Developer', '3D- Designer'],
+    strings: [
+        '<span style="font-family: Arial, sans-serif;">Web Developer</span>',
+        '<span style="font-family: "Courier New", Courier, monospace;">3D- Designer</span>',
+        '<span style="font-family: "Times New Roman", Times, serif;">Machine Learning Engineer</span>',
+        '<span style="font-family: "Comic Sans MS", cursive, sans-serif;">Data Scientist</span>'
+    ],
     typeSpeed: 100,
     backSpeed: 100,
     backDelay: 1000,
@@ -74,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
         moveIndicator(homeLink);
     }
 
-        // Use IntersectionObserver to activate nav when a section covers >= 60% of the viewport
+        // Use IntersectionObserver to activate nav when a section covers >= 20% of the viewport
         const sections = Array.from(document.querySelectorAll('section[id]'));
 
         const observerOptions = {
@@ -139,9 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
             entries.forEach(entry => {
                 const ratio = entry.intersectionRatio;
 
-                // If section is at least 60% visible, make its nav link active and resume animations
+                // If section is at least 20% visible, make its nav link active and resume animations
                 const prev = entry.target.previousElementSibling;
-                if (ratio >= 0.6) {
+                if (ratio >= 0.2) {
                     const id = entry.target.id;
                     const activeLink = document.querySelector('.header .navbar a[href="#' + id + '"]');
                     setActive(activeLink);
@@ -186,6 +191,5 @@ document.addEventListener('DOMContentLoaded', function () {
         // initial check (in case page loaded with a hash)
         if (location.hash) scrollToTarget(location.hash);
 });
-
 
 
